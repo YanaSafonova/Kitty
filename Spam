@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-const int size=
+#include <cmath>
+const int size=1424;
 using namespace std;
 struct sms
 { string type;
