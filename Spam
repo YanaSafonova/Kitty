@@ -1,13 +1,17 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+const int size=
 using namespace std;
-struct* sms
+struct sms
 { string type;
 String txt;
 };
+struct spam
+{string name;
+int index;
+};
 void create(ifstream &input,sms *a,size)
-//Общее количество сообщений знаем заранее ну или надо чтобы оно было в начале файла
 {a=new sms[size];
 for (int i=0;i<size;i++)
 input>>a[i].type<<a[i].txt;
