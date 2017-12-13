@@ -1,0 +1,26 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <cmath>
+const int size=1424;
+using namespace std;
+struct sms
+{ string type; ///может лучше char?
+String txt;
+};
+struct spam
+{string word;
+int index;
+};
+void create(ifstream &input,sms *a,size)
+{a=new sms[size];
+for (int i=0;i<size;i++)
+input>>a[i].type<<a[i].txt ///в структуру будет занесено только первое слово сообщения!Надо исправить
+}
+int sum_spam(sms*a)
+{int N_i;
+for (int i=0;i<size;i++)
+if(a[i].type=="spam")
+N_i++;
+return N_i;
+}
