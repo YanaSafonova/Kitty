@@ -1,0 +1,100 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <cmath>
+#include <cstring>
+const int n = 1424;
+using namespace std;
+struct sms ///структура для всех сообщений
+{
+	string type; 
+	string txt;
+};
+////////////////////
+struct spam ///структура для уникальных спам слов и их коэффициентов
+{
+	string word;
+	int index;
+};
+//////////////////////////////////////////////////////////////////////////////
+void create(ifstream &input, sms a[n])///создание структуры сообщений
+{
+	for (int i = 0; i < n; i++)
+	{
+		input >> a[i].type;
+		getline(input, a[i].txt);
+	}
+}
+///////////////////
+int sum_spam(sms a[n])///подсчет спам сообщений
+{
+	int N_i;
+	for (int i = 0; i< n; i++)
+		if (a[i].type == "spam")
+			N_i++;
+	return N_i;
+}
+//////////////////
+bool presence(string sms,string word) /// Есть ли слово в данной строке
+{
+bool f;
+int m1=size(sms);
+int m2=size(word);
+for (int i=0;i<m1;i++)
+{f=true;
+for (int j=0;j<m && f;j++)
+if(sms[i]!=word[j])
+f=false;
+else
+i++;
+if(f)
+break;
+}
+return f;
+}
+/////////////////
+int counter(string word,sms a) ///в скольких словах встречается это слово
+{
+count=0;
+for (i=0;i<n;i++)
+if (entry(a[i].txt,word))
+count++;
+return count;
+}
+/////////////////
+bool E(spam b[10000],string word) ///Есть ли уже такое слово в структуре
+{
+bool f=false;
+for (int i=0;i<10000;i++)
+if(word==b[i].word)
+f=true;
+return f;
+}
+//////////////////
+void enter(spam b[10000],int i,string word,double log) ///занести слово в структуру на i-тую позицию
+{
+b[i].word=word;
+b[i].index=log;
+}
+/////////////////
+void show(ofsream &f,spam x[10000]) ///вывод структуры со спам словами в файл
+{
+for (int i=0,i<10000;i++)
+f<<x[i].word<<" "<<x[i].index<<endl;
+}
+/////////////////////////////////////////////////////////
+void main()
+{ 
+sms a[n];
+spam b[10000];
+int n_i=0;
+int m;
+string word="";
+ifstream in("sms.txt");
+ofsream out("rezult.txt");
+create(in,a);
+in.close();
+int N_i= sum_spam(a[n]);
+for (int i=0;i<n;i++)
+if(a[i].type == "spam")
+{
