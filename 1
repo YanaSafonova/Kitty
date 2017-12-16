@@ -1,0 +1,36 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <cmath>
+const int n = 1424;
+using namespace std;
+struct sms
+{
+	string type; 
+	string txt;
+};
+////////////////////
+struct spam
+{
+	string word;
+	int index;
+};
+//////////////////////////////////////////////////////////////////////////////
+void create(ifstream &input, sms *a)
+{
+	a = new sms[n];
+	for (int i = 0; i < n; i++)
+	{
+		input >> a[i].type;
+		getline(input, a[i].txt);
+	}
+}
+///////////////////
+int sum_spam(sms*a)
+{
+	int N_i;
+	for (int i = 0; i< n; i++)
+		if (a[i].type == "spam")
+			N_i++;
+	return N_i;
+}
