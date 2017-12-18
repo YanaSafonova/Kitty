@@ -1,0 +1,158 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <cstring>
+#include <cmath>
+
+const int n = 1424;
+using namespace std;
+struct sms ///структура для всех сообщений
+{
+	string type;
+	string txt;
+};
+////////////////////
+struct spam ///структура для уникальных спам слов и их коэффициентов
+{
+	string word;
+	int index;
+};
+
+//////////////////////////////////////////////////////////////////////////////
+void read_from_file(ifstream& input, sms* a) ///создание структуры сообщений
+{
+	for (int i = 0; i < n; i++)
+	{
+		input >> a[i].type;
+		string tmp_line;
+		getline(input, tmp_line);
+		a[i].txt = tmp_line;
+		//        a[i].txt = tolower(tmp_line);
+	}
+}
+
+///////////////////
+int sum_spam(sms a[n])///подсчет спам сообщений
+{
+	int N_i = 0;
+	for (int i = 0; i < n; i++)
+		if (a[i].type == "spam")
+			N_i++;
+	return N_i;
+}
+
+//////////////////
+bool have_sms_this_word(string sms, string word) /// Есть ли слово в данном сообщении
+{
+	bool f = false;
+	int m1 = sms.size();
+	int m2 = word.size();
+	for (int i = 0; i < m1; i++)
+	{
+		f = true;
+		for (int j = 0; j < m2 && f; j++)
+			if (sms[i] != word[j])
+				f = false;
+			else
+				i++;
+		if (f)
+			break;
+	}
+	return f;
+}
+
+/////////////////
+int counter(string word, sms* a) ///в скольких сообщениях встречается это слово
+{
+	int k = 0;
+	for (int i = 0; i < n; i++)
+		if (have_sms_this_word(a[i].txt, word))
+			k++;
+	return k;
+}
+
+const int max_spam_words = 10000;
+
+/////////////////
+bool is_this_word_not_unique(spam b[max_spam_words], string word) ///Есть ли уже такое слово в структуре
+{
+	bool f = false;
+	for (int i = 0; i < max_spam_words; i++)
+		if (word == b[i].word)
+			f = true;
+	return f;
+}
+
+//////////////////
+void enter_in_struct(spam b[max_spam_words], int i, string word, double log) ///занести слово в структуру на i-тую позицию
+{
+	b[i].word = word;
+	b[i].index = log;
+}
+
+/////////////////
+void show_in_file(ofstream& f, spam x[max_spam_words]) ///вывод структуры со спам словами в файл
+{
+	for (int i = 0; i < max_spam_words; i++)
+		f << x[i].word << " " << x[i].index << endl;
+}
+////////////////
+bool is_letter(char ch) ///этот символ буква?
+{
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z';
+}
+/////////////////
+vector<string> get_words_from_str(string str) ///создание вектора слов из строки
+{
+	vector<string> found_words = vector<string>();
+	int word_begin = -1;
+	bool is_last_char_letter = false;
+	for (int i = 0; i < str.size(); i++)
+		if (is_letter(str[i]))
+		{
+			if (word_begin == -1)
+				word_begin = i;
+		}
+		else
+			if (word_begin != -1)
+			{
+				found_words.push_back(str.substr(word_begin, i - word_begin));
+				word_begin = -1;
+			}
+
+
+	return found_words;
+}
+/////////////////////////////////////////////////////////
+int main()
+{
+	sms a[n];
+	spam b[max_spam_words];
+	int n_i = 0;
+	int m = 0;
+	vector<string> words;
+	ifstream in("sms.txt");
+	ofstream out("rezult.txt");
+	read_from_file(in, a);
+	in.close();
+	int N = sum_spam(a);
+	for (int i = 0; i < n; i++)
+	{
+		if (a[i].type == "spam")
+		{
+			words = get_words_from_str(a[i].txt);
+			for (int j = 0; j < words.size(); j++)
+				if (!is_this_word_not_unique(b, words[j]))
+				{
+					n_i = counter(words[j], a);
+					enter_in_struct(b, m, words[j], log(n_i / N));
+					m++;
+				}
+		}
+	}
+	show_in_file(out, b);
+	out.close();
+	system("pause");
+	return 0;
+}
