@@ -9,6 +9,7 @@
 #include <locale>
 
 const int n = 1424;
+const int max_spam_words = 3000;
 using namespace std;
 struct sms ///структура для всех сообщений
 {
@@ -77,7 +78,7 @@ int counter(string word, sms* a) ///в скольких сообщениях в�
 	return k;
 }
 
-const int max_spam_words = 10000;
+
 
 bool is_this_word_not_unique(spam b[max_spam_words], string word) ///Есть ли уже такое слово в структуре
 {
