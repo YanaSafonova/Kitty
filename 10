@@ -6,6 +6,7 @@
 #include <cstring>
 #include <cctype>
 #include <algorithm>
+#include <locale>
 
 const int n = 1424;
 using namespace std;
@@ -21,14 +22,13 @@ struct spam ///структура для уникальных спам слов 
 	int index;
 };
 
-//////////////////////////////////////////////////////////////////////////////
-string to_lower_case(string str)
+string to_lower_case(string str)///перевод букв в нижний регистр
 {
-	transform(str.begin(), str.end(), str.begin(),tolower);
+	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 	return str;
 }
 
-///////////////////
+//////////////////////////////////////////////////////////////////////////////
 void read_from_file(ifstream& input, sms* a) ///создание структуры сообщений
 {
 	for (int i = 0; i < n; i++)
@@ -88,7 +88,8 @@ bool is_this_word_not_unique(spam b[max_spam_words], string word) ///Есть л
 	return f;
 }
 
-void enter_in_struct(spam b[max_spam_words], int i, string word, double log) ///занести слово в структуру на i-тую позицию
+void
+enter_in_struct(spam b[max_spam_words], int i, string word, double log) ///занести слово в структуру на i-тую позицию
 {
 	b[i].word = word;
 	b[i].index = log;
@@ -103,7 +104,7 @@ void show_in_file(ofstream& f, spam x[max_spam_words]) ///вывод струк�
 ////////////////
 bool is_letter(char ch) ///этот символ буква?
 {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z';
+	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z');
 }
 
 /////////////////
@@ -136,7 +137,8 @@ int main()
 	spam b[max_spam_words];
 	int m = 0;
 	vector<string> words;
-	ifstream in("sms.txt");
+	string in_file_path = "C:\\Users\\Denis\\Downloads\\sms\\sms.txt";
+	ifstream in(in_file_path);
 	ofstream out("result.txt");
 	read_from_file(in, a);
 	in.close();
@@ -164,3 +166,4 @@ int main()
 	//    system("pause");
 	return 0;
 }
+
