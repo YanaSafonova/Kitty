@@ -68,13 +68,6 @@ bool have_sms_this_word(string sms, string word) /// Есть ли слово в
 	return f;
 }
 
-// Ayrat: The example, how the documentation should look like
-/**
-* How much sms contains provided word
-* @param word Searching word
-* @param a Container of sms
-* @return Number of sms which contains the word
-*/
 int counter(string word, sms* a) ///в скольких сообщениях встречается это слово
 {
 	int k = 0;
