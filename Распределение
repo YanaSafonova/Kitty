@@ -164,6 +164,6 @@ int main()
 	}
 	show_in_file(out, b);
 	out.close();
-	//    system("pause");
+        system("pause");
 	return 0;
 }
