@@ -1,0 +1,169 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <cstring>
+#include <cctype>
+#include <algorithm>
+#include <locale>
+
+const int n = 1424;
+const int max_spam_words = 3000;
+using namespace std;
+struct sms        /// {RUSLAN}
+{
+	string type;
+	string txt;
+};
+////////////////////
+struct spam       ///{RUSLAN}
+{
+	string word;
+	int index;
+};
+
+string to_lower_case(string str)      ///{YANA}
+{
+	transform(str.begin(), str.end(), str.begin(), tolower);
+	return str;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+void read_from_file(ifstream& input, sms* a)      ///{YANA}
+{
+	for (int i = 0; i < n; i++)
+	{
+		input >> a[i].type;
+		string tmp_line;
+		getline(input, tmp_line);
+		a[i].txt = to_lower_case(tmp_line);
+	}
+}
+
+///////////////////
+int sum_spam(sms a[n])         ///{RUSLAN}
+{
+	int N_i = 0;
+	for (int i = 0; i < n; i++)
+		if (a[i].type == "spam")
+			N_i++;
+	return N_i;
+}
+
+
+bool have_sms_this_word(string sms, string word)       ///{Ruslan}
+{
+	bool f = false;
+	for (int i = 0; i < sms.size(); i++)
+	{
+		f = true;
+		for (int j = 0; j < word.size() && f; j++)
+			if (sms[i] != word[j])
+				f = false;
+			else
+				i++;
+		if (f)
+			break;
+	}
+	return f;
+}
+
+int counter(string word, sms* a)      ///{Ruslan}
+{
+	int k = 0;
+	for (int i = 0; i < n; i++)
+		if (have_sms_this_word(a[i].txt, word))
+			k++;
+	return k;
+}
+
+
+
+bool is_this_word_not_unique(spam b[max_spam_words], string word)     ///{Sasha}
+{
+	bool f = false;
+	for (int i = 0; i < max_spam_words; i++)
+		if (word == b[i].word)
+			f = true;
+	return f;
+}
+
+void
+enter_in_struct(spam b[max_spam_words], int i, string word, double log)   ///{Sasha}
+{
+	b[i].word = word;
+	b[i].index = log;
+}
+
+void show_in_file(ofstream& f, spam x[max_spam_words]) ///{Sasha}
+{
+	for (int i = 0; i < max_spam_words; i++)
+		f << x[i].word << " " << x[i].index << endl;
+}
+
+////////////////
+bool is_letter(char ch)              ///{YANA}
+{
+	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z');
+}
+
+/////////////////
+vector<string> get_words_from_str(string str)              ///{YANA}
+{
+	vector<string> found_words = vector<string>();
+	int word_begin = -1;
+	bool is_last_char_letter = false;
+	for (int i = 0; i < str.size(); i++)
+		if (is_letter(str[i]))
+		{
+			if (word_begin == -1)
+				word_begin = i;
+		}
+		else
+			if (word_begin != -1)
+			{
+				found_words.push_back(str.substr(word_begin, i - word_begin));
+				word_begin = -1;
+			}
+
+
+	return found_words;
+}
+
+/////////////////////////////////////////////////////////{Sasha}
+int main()        
+{
+	sms a[n];
+	spam b[max_spam_words];
+	int m = 0;
+	vector<string> words;
+	string in_file_path = "C:\\Users\\Sasha\\Downloads\\sms\\sms.txt";
+	ifstream in(in_file_path);
+	ofstream out("result.txt");
+	read_from_file(in, a);
+	in.close();
+	int n_i = 0;
+	int N = sum_spam(a);
+	for (int i = 0; i < n; i++)
+	{
+		if (a[i].type == "spam")
+		{
+			words = get_words_from_str(a[i].txt);
+			for (int j = 0; j < words.size(); j++)
+
+				if (!is_this_word_not_unique(b, words[j]))
+				{
+					n_i = counter(words[j], a);
+					cout << words[j] << " " << n_i << "\n";
+
+					enter_in_struct(b, m, words[j], log((float)n_i / N));
+					m++;
+				}
+		}
+	}
+	show_in_file(out, b);
+	out.close();
+	//    system("pause");
+	return 0;
+}
